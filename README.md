@@ -37,21 +37,6 @@ pip install ikomia
 
 #### 2. Create your workflow
 
-- **model_name** (str) - default 'yolo_world_m': Name of the YOLOv8 pre-trained model. Other model available:
-    - yolo_world_s
-    - yolo_world_l
-    - yolo_world_l_plus
-    - yolov8x-seg
-
-- **conf_thres** (float) default '0.1': Box threshold for the prediction [0,1].
-- **max_dets** (int) - default '100': The maximum number of bounding boxes that can be retained across all classes after NMS (Non-Maximum Suppression).  This parameter limits the total number of detections returned by the model, ensuring that only the most confident detections are retained.
-
-If using a custom model:
-- **model_weight_file** (str, *optional*): Path to model weights file .pth. 
-- **config_file** (str, *optional*): Path to model config file .py. 
-
-**Parameters** should be in **strings format**  when added to the dictionary.
-
 ```python
 from ikomia.dataprocess.workflow import Workflow
 from ikomia.utils.displayIO import display
@@ -79,9 +64,19 @@ Ikomia Studio offers a friendly UI with the same features as the API.
 
 ## :pencil: Set algorithm parameters
 
-[Explain each algorithm parameters]
+- **model_name** (str) - default 'yolo_world_m': Name of the YOLO_WORLD pre-trained model. Other model available:
+    - yolo_world_s
+    - yolo_world_l
+    - yolo_world_l_plus
 
-[Change the sample image URL to fit algorithm purpose]
+- **conf_thres** (float) default '0.1': Box threshold for the prediction [0,1].
+- **max_dets** (int) - default '100': The maximum number of bounding boxes that can be retained across all classes after NMS (Non-Maximum Suppression).  This parameter limits the total number of detections returned by the model, ensuring that only the most confident detections are retained.
+
+If using a custom model:
+- **model_weight_file** (str, *optional*): Path to model weights file .pth. 
+- **config_file** (str, *optional*): Path to model config file .py. 
+
+**Parameters** should be in **strings format**  when added to the dictionary.
 
 ```python
 from ikomia.dataprocess.workflow import Workflow
