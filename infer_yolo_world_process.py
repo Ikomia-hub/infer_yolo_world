@@ -19,6 +19,7 @@ class InferYoloWorldParam(core.CWorkflowTaskParam):
         core.CWorkflowTaskParam.__init__(self)
         # Place default value initialization here
         self.model_name = 'yolo_world_m'
+        self.cuda = torch.cuda.is_available()
         self.prompt = 'person, dog, cat'
         self.max_dets = 100
         self.conf_thres = 0.1
@@ -30,8 +31,8 @@ class InferYoloWorldParam(core.CWorkflowTaskParam):
     def set_values(self, params):
         # Set parameters values from Ikomia Studio or API
         # Parameters values are stored as string and accessible like a python dict
-        # Example : self.window_size = int(params["window_size"])
         self.model_name = str(params["model_name"])
+        self.cuda = utils.strtobool(params["cuda"])
         self.prompt = str(params["prompt"])
         self.max_dets = int(params["max_dets"])
         self.conf_thres = float(params["conf_thres"])
@@ -45,6 +46,7 @@ class InferYoloWorldParam(core.CWorkflowTaskParam):
         # Create the specific dict structure (string container)
         params = {}
         params["model_name"] = str(self.model_name)
+        params["cuda"] = str(self.cuda)
         params["prompt"] = str(self.prompt)
         params["max_dets"] = str(self.max_dets)
         params["conf_thres"] = str(self.conf_thres)
@@ -101,7 +103,8 @@ class InferYoloWorld(dataprocess.CObjectDetectionTask):
         input = self.get_input(0)
 
         if param.update or self.runner is None:
-            self.device = torch.device('cuda')
+            self.device = torch.device(
+                "cuda") if param.cuda and torch.cuda.is_available() else torch.device("cpu")
             # Get model and config file
             if param.model_weight_file != "":
                 model_weights = param.model_weight_file

@@ -4,7 +4,7 @@ from infer_yolo_world.infer_yolo_world_process import InferYoloWorldParam
 
 # PyQt GUI framework
 from PyQt5.QtWidgets import *
-
+from torch.cuda import is_available
 
 # --------------------
 # - Class which implements widget associated with the algorithm
@@ -22,6 +22,12 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
 
         # Create layout : QGridLayout by default
         self.grid_layout = QGridLayout()
+
+
+        # Cuda
+        self.check_cuda = pyqtutils.append_check(
+            self.grid_layout, "Cuda", self.parameters.cuda and is_available())
+        self.check_cuda.setEnabled(is_available())
 
         # Model name
         self.combo_model = pyqtutils.append_combo(
@@ -42,11 +48,11 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
                                                 self.parameters.conf_thres,
                                                 min=0., max=1., step=0.01, decimals=2)
 
-        # Top k
-        self.spin_top_k = pyqtutils.append_spin(
+        # Maximum detection
+        self.spin_max_dets = pyqtutils.append_spin(
                                         self.grid_layout,
-                                        "Top k",
-                                        self.parameters.top_k,
+                                        "Max number of detection",
+                                        self.parameters.max_dets,
                                         min=1
                                     )
         # Costum model
@@ -89,6 +95,7 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
     def on_apply(self):
         # Apply button clicked slot
         self.parameters.model_name = self.combo_model.currentText()
+        self.parameters.cuda = self.check_cuda.isChecked()
         self.parameters.conf_thres = self.spin_conf_thres.value()
         self.parameters.max_dets = self.spin_max_dets.value()
         self.parameters.use_custom_model = self.check_custom_model.isChecked()
