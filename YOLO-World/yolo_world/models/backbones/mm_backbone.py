@@ -12,7 +12,7 @@ from transformers import (
     AutoModel,
     CLIPTextConfig)
 from transformers import CLIPTextModelWithProjection as CLIPTP
-
+import os.path as osp
 
 @MODELS.register_module()
 class HuggingVisionBackbone(BaseModule):
@@ -71,11 +71,40 @@ class HuggingCLIPLanguageBackbone(BaseModule):
 
         self.frozen_modules = frozen_modules
         self.training_use_cache = training_use_cache
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        clip_config = CLIPTextConfig.from_pretrained(model_name,
-                                                     attention_dropout=dropout)
-        self.model = CLIPTP.from_pretrained(model_name,
-                                            config=clip_config)
+        
+
+        model_folder = osp.join(osp.dirname(osp.dirname(
+                                osp.dirname(osp.dirname(
+                                osp.dirname(osp.realpath(__file__)))))),
+                                "weights")
+
+        try:
+            self.tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_folder, local_files_only=True)
+        except Exception as e:
+            print(f"Failed with error: {e}. Trying without the local_files_only parameter...")
+            self.tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_folder)
+
+        try:
+            clip_config = CLIPTextConfig.from_pretrained(model_name,
+                                                        attention_dropout=dropout,
+                                                        cache_dir=model_folder,
+                                                        local_files_only=True)        
+        except Exception as e:
+            print(f"Failed with error: {e}. Trying without the local_files_only parameter...")
+            clip_config = CLIPTextConfig.from_pretrained(model_name,
+                                            attention_dropout=dropout,
+                                            cache_dir=model_folder,
+                                            local_files_only=True)  
+        try:
+            self.model = CLIPTP.from_pretrained(model_name,
+                                                config=clip_config,
+                                                cache_dir=model_folder,
+                                                local_files_only=True)
+        except Exception as e:
+            print(f"Failed with error: {e}. Trying without the local_files_only parameter...")
+            self.model = CLIPTP.from_pretrained(model_name,
+                                                config=clip_config,
+                                                cache_dir=model_folder)
         self._freeze_modules()
 
     def forward_cache(self, text: List[List[str]]) -> Tensor:
