@@ -1,0 +1,6 @@
+--find-links https://download.openmmlab.com/mmcv/dist/cu116/torch1.13/index.html
+mmcv==2.0.1 ## mim install mmcv==2.0.1
+mmcv-lite==2.0.1
+mmdet==3.0.0
+mmengine>==0.7.1
+mmyolo @ git+https://github.com/onuralpszr/mmyolo.git
