@@ -92,9 +92,8 @@ algo.set_parameters({
         "model_name": "yolo_world_m",
         "prompt": "person, dog, cup",
         "max_dets": "100",
-        "conf_thres": "0.07",
-        "top_k":"100"
-})
+        "conf_thres": "0.07"
+        })
 
 # Run on your image
 wf.run_on(url="https://images.pexels.com/photos/745045/pexels-photo-745045.jpeg?cs=srgb&dl=pexels-helena-lopes-745045.jpg&fm=jpg&w=1280&h=869")
