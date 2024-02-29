@@ -57,21 +57,18 @@ display(algo.get_image_with_graphics())
 ## :sunny: Use with Ikomia Studio
 
 Ikomia Studio offers a friendly UI with the same features as the API.
-
 - If you haven't started using Ikomia Studio yet, download and install it from [this page](https://www.ikomia.ai/studio).
-
 - For additional guidance on getting started with Ikomia Studio, check out [this blog post](https://www.ikomia.ai/blog/how-to-get-started-with-ikomia-studio).
 
 ## :pencil: Set algorithm parameters
-
 - **model_name** (str) - default 'yolo_world_m': Name of the YOLO_WORLD pre-trained model. Other model available:
     - yolo_world_s
     - yolo_world_l
     - yolo_world_l_plus
+    - yolo_world_l_x
 - **conf_thres** (float) default '0.1': Box threshold for the prediction [0,1].
 - **max_dets** (int) - default '100': The maximum number of bounding boxes that can be retained across all classes after NMS (Non-Maximum Suppression).  This parameter limits the total number of detections returned by the model, ensuring that only the most confident detections are retained.
 - **cuda** (bool): If True, CUDA-based inference (GPU). If False, run on CPU.
-
 If using a custom model:
 - **model_weight_file** (str, *optional*): Path to model weights file .pth. 
 - **config_file** (str, *optional*): Path to model config file .py. 

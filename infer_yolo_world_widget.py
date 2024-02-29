@@ -36,6 +36,8 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
         self.combo_model.addItem("yolo_world_m")
         self.combo_model.addItem("yolo_world_l")
         self.combo_model.addItem("yolo_world_l_plus")
+        self.combo_model.addItem("yolo_world_x")
+
 
         # Prompt
         self.edit_prompt = pyqtutils.append_edit(
