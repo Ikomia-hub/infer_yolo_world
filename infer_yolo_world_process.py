@@ -3,6 +3,7 @@ from ikomia import core, dataprocess, utils
 import sys
 import os.path as osp
 import torch
+from torchvision.ops import nms
 from mmengine.config import Config
 from mmengine.runner import Runner
 from mmengine.dataset import Compose
@@ -23,6 +24,7 @@ class InferYoloWorldParam(core.CWorkflowTaskParam):
         self.prompt = 'person, dog, cat'
         self.max_dets = 100
         self.conf_thres = 0.1
+        self.iou_thres = 0.25
         self.use_custom_model = False
         self.config_file = ""
         self.model_weight_file = ""
@@ -36,6 +38,7 @@ class InferYoloWorldParam(core.CWorkflowTaskParam):
         self.prompt = str(params["prompt"])
         self.max_dets = int(params["max_dets"])
         self.conf_thres = float(params["conf_thres"])
+        self.iou_thres = float(params["iou_thres"])
         self.config_file = params["config_file"]
         self.use_custom_model = utils.strtobool(params["use_custom_model"])
         self.model_weight_file = params["model_weight_file"]
@@ -50,6 +53,7 @@ class InferYoloWorldParam(core.CWorkflowTaskParam):
         params["prompt"] = str(self.prompt)
         params["max_dets"] = str(self.max_dets)
         params["conf_thres"] = str(self.conf_thres)
+        params["iou_thres"] = str(self.iou_thres)
         params["config_file"] = str(self.config_file)
         params["model_weight_file"] = str(self.model_weight_file)
         params["use_custom_model"] = str(self.use_custom_model)
@@ -149,8 +153,11 @@ class InferYoloWorld(dataprocess.CObjectDetectionTask):
         with torch.no_grad():
             output = self.runner.model.test_step(data_batch)[0]
             pred_instances = output.pred_instances
-            pred_instances = pred_instances[
-                pred_instances.scores.float() > param.conf_thres]
+             
+        keep = nms(pred_instances.bboxes, pred_instances.scores, iou_threshold=param.iou_thres)
+        pred_instances = pred_instances[keep]
+        pred_instances = pred_instances[pred_instances.scores.float() > param.conf_thres]  
+        
         if len(pred_instances.scores) > param.max_dets:
             indices = pred_instances.scores.float().topk(param.max_dets)[1]
             pred_instances = pred_instances[indices]

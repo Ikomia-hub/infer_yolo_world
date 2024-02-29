@@ -38,7 +38,6 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
         self.combo_model.addItem("yolo_world_l_plus")
         self.combo_model.addItem("yolo_world_x")
 
-
         # Prompt
         self.edit_prompt = pyqtutils.append_edit(
             self.grid_layout, "Prompt", self.parameters.prompt)
@@ -48,6 +47,13 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
                                                 self.grid_layout,
                                                 "Confidence thresh",
                                                 self.parameters.conf_thres,
+                                                min=0., max=1., step=0.01, decimals=2)
+        
+        # IoU thresholds
+        self.spin_iou_thres = pyqtutils.append_double_spin(
+                                                self.grid_layout,
+                                                "Confidence thresh",
+                                                self.parameters.iou_thres,
                                                 min=0., max=1., step=0.01, decimals=2)
 
         # Maximum detection
@@ -99,6 +105,7 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
         self.parameters.model_name = self.combo_model.currentText()
         self.parameters.cuda = self.check_cuda.isChecked()
         self.parameters.conf_thres = self.spin_conf_thres.value()
+        self.parameters.iou_thres = self.spin_iou_thres.value()
         self.parameters.max_dets = self.spin_max_dets.value()
         self.parameters.use_custom_model = self.check_custom_model.isChecked()
         self.parameters.config_file = self.browse_custom_cfg.path
