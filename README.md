@@ -63,9 +63,15 @@ Ikomia Studio offers a friendly UI with the same features as the API.
 ## :pencil: Set algorithm parameters
 - **model_name** (str) - default 'yolo_world_m': Name of the YOLO_WORLD pre-trained model. Other model available:
     - yolo_world_s
+    - yolo_world_v2_s
+    - yolo_world_m
+    - yolo_world_v2_m
     - yolo_world_l
+    - yolo_world_v2_l
     - yolo_world_l_plus
+    - yolo_world_v2_l_plus
     - yolo_world_l_x
+    - yolo_world_v2_l_x
 - **conf_thres** (float) default '0.1': Box threshold for the prediction [0,1].
 - **max_dets** (int) - default '100': The maximum number of bounding boxes that can be retained across all classes after NMS (Non-Maximum Suppression).  This parameter limits the total number of detections returned by the model, ensuring that only the most confident detections are retained.
 - **cuda** (bool): If True, CUDA-based inference (GPU). If False, run on CPU.
