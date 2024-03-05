@@ -113,7 +113,7 @@ class InferYoloWorld(dataprocess.CObjectDetectionTask):
             if param.model_weight_file != "":
                 model_weights = param.model_weight_file
                 if param.config_file != "":
-                    self.config_file = param.config_file
+                    config_file = param.config_file
                 else:
                     print('Error: Please provide a path to the model config file.')
                     sys.exit(1)
@@ -137,6 +137,8 @@ class InferYoloWorld(dataprocess.CObjectDetectionTask):
             pipeline = cfg.test_dataloader.dataset.pipeline
             self.runner.pipeline = Compose(pipeline)
             self.runner.model.eval().to(self.device)
+
+            param.update = False
 
         # Get and set classes
         texts = [[t.strip()] for t in param.prompt.split(',')] + [[' ']]
