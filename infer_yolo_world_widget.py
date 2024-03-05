@@ -57,7 +57,7 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
         # IoU thresholds
         self.spin_iou_thres = pyqtutils.append_double_spin(
                                                 self.grid_layout,
-                                                "Confidence thresh",
+                                                "IoU thresh",
                                                 self.parameters.iou_thres,
                                                 min=0., max=1., step=0.01, decimals=2)
 
