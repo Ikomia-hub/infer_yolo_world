@@ -110,6 +110,7 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
     def on_apply(self):
         # Apply button clicked slot
         self.parameters.model_name = self.combo_model.currentText()
+        self.parameters.prompt = self.edit_prompt.currentText()
         self.parameters.cuda = self.check_cuda.isChecked()
         self.parameters.conf_thres = self.spin_conf_thres.value()
         self.parameters.iou_thres = self.spin_iou_thres.value()
