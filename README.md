@@ -73,6 +73,7 @@ Ikomia Studio offers a friendly UI with the same features as the API.
     - yolo_world_l_x
     - yolo_world_v2_l_x
 - **conf_thres** (float) default '0.1': Box threshold for the prediction [0,1].
+- **iou_thres** (float) - default '0.25': Intersection over Union, degree of overlap between two boxes [0,1].
 - **max_dets** (int) - default '100': The maximum number of bounding boxes that can be retained across all classes after NMS (Non-Maximum Suppression).  This parameter limits the total number of detections returned by the model, ensuring that only the most confident detections are retained.
 - **cuda** (bool): If True, CUDA-based inference (GPU). If False, run on CPU.
 If using a custom model:
