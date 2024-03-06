@@ -50,7 +50,6 @@ def download_model_weights(model_name):
     if not os.path.isdir(model_folder):
         os.makedirs(model_folder, exist_ok=True)
 
-
     if model_name in model_info:
         url = model_info[model_name]["url"]
         config = model_info[model_name]["config"]
@@ -61,26 +60,28 @@ def download_model_weights(model_name):
         
         # Extract filename from URL
         filename = url.split("/")[-1]
-
         save_path = os.path.join(model_folder, filename)
         
-        # Download the model weights
-        response = requests.get(url)
-        if response.status_code == 200:
-            with open(save_path, "wb") as f:
-                f.write(response.content)
-            print(f"Downloaded {filename} to {save_path}")
+        # Check if the model weights already exist, if so, skip the download
+        if os.path.exists(save_path):
+            print(f"{filename} already exists. Skipping download.")
         else:
-            print(f"Failed to download {filename}. Status code: {response.status_code}")
+            # Download the model weights
+            response = requests.get(url)
+            if response.status_code == 200:
+                with open(save_path, "wb") as f:
+                    f.write(response.content)
+                print(f"Downloaded {filename} to {save_path}")
+            else:
+                print(f"Failed to download {filename}. Status code: {response.status_code}")
         
         return save_path, config
     else:
         print(f"Model name '{model_name}' not recognized.")
         return None
 
-
 if __name__ == "__main__":
     model_name = "yolo_world_m"
-    config_name = download_model_weights(model_name)
-    if config_name:
-        print(f"Model Config Name: {config_name}")
+    save_path, config = download_model_weights(model_name)
+    if save_path and config:
+        print(f"Model Config Name: {config}")
