@@ -80,7 +80,7 @@ def download_model_weights(model_name):
 
 
 if __name__ == "__main__":
-    model_name = "yolo_world_s"
+    model_name = "yolo_world_m"
     config_name = download_model_weights(model_name)
     if config_name:
         print(f"Model Config Name: {config_name}")

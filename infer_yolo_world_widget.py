@@ -42,6 +42,8 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
         self.combo_model.addItem("yolo_world_l_v2_plus")
         self.combo_model.addItem("yolo_world_x")
         self.combo_model.addItem("yolo_world_v2_x")
+        
+        self.combo_model.setCurrentText(self.parameters.model_name)
 
         # Prompt
         self.edit_prompt = pyqtutils.append_edit(
@@ -108,6 +110,7 @@ class InferYoloWorldWidget(core.CWorkflowTaskWidget):
     def on_apply(self):
         # Apply button clicked slot
         self.parameters.model_name = self.combo_model.currentText()
+        self.parameters.prompt = self.edit_prompt.text()
         self.parameters.cuda = self.check_cuda.isChecked()
         self.parameters.conf_thres = self.spin_conf_thres.value()
         self.parameters.iou_thres = self.spin_iou_thres.value()
