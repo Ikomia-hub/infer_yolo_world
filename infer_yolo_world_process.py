@@ -43,7 +43,7 @@ class InferYoloWorldParam(core.CWorkflowTaskParam):
         self.use_custom_model = utils.strtobool(params["use_custom_model"])
         self.model_weight_file = params["model_weight_file"]
         self.update = True
-
+ 
     def get_values(self):
         # Send parameters values to Ikomia Studio or API
         # Create the specific dict structure (string container)
@@ -78,6 +78,9 @@ class InferYoloWorld(dataprocess.CObjectDetectionTask):
         self.runner = None
         self.config_path_base = osp.join(osp.dirname(osp.realpath(__file__)),
                                                             "YOLO-World", "configs", "pretrain")
+        self.config = None
+        self.weights = None
+        self.works_dir = osp.join(osp.dirname(osp.realpath(__file__)), 'works_dir')
 
     def get_progress_steps(self):
         # Function returning the number of progress steps for this algorithm
@@ -122,23 +125,28 @@ class InferYoloWorld(dataprocess.CObjectDetectionTask):
 
             # Load config
             config_file = osp.join(self.config_path_base, config_name)
-            cfg = Config.fromfile(config_file)
-            cfg.work_dir = osp.join('./work_dirs',osp.splitext(osp.basename(config_file))[0])
-            cfg.load_from = model_weights
 
-            # Load model
-            if 'runner_type' not in cfg:
-                self.runner = Runner.from_cfg(cfg)
-            else:
-                self.runner = RUNNERS.build(cfg)
+            if config_file!=self.config  or model_weights!= self.weights:
+                self.config = config_file
+                self.weights = model_weights
+                cfg = Config.fromfile(self.config)
+                cfg.work_dir = osp.join(self.works_dir ,osp.splitext(osp.basename(self.config))[0])
+                cfg.load_from = self.weights
 
-            self.runner.call_hook('before_run')
-            self.runner.load_or_resume()
-            pipeline = cfg.test_dataloader.dataset.pipeline
-            self.runner.pipeline = Compose(pipeline)
-            self.runner.model.eval().to(self.device)
+                # Load model
+                if 'runner_type' not in cfg:
+                    self.runner = Runner.from_cfg(cfg)
+                else:
+                    self.runner = RUNNERS.build(cfg)
+
+                self.runner.call_hook('before_run')
+                self.runner.load_or_resume()
+                pipeline = cfg.test_dataloader.dataset.pipeline
+                self.runner.pipeline = Compose(pipeline)
+                self.runner.model.eval().to(self.device)
 
             param.update = False
+
 
         # Get and set classes
         texts = [[t.strip()] for t in param.prompt.split(',')] + [[' ']]
@@ -150,16 +158,16 @@ class InferYoloWorld(dataprocess.CObjectDetectionTask):
         data_info = self.runner.pipeline(data_info)
         data_batch = dict(inputs=data_info['inputs'].unsqueeze(0),
                         data_samples=[data_info['data_samples']])
-    
+
         # Inference
         with torch.no_grad():
             output = self.runner.model.test_step(data_batch)[0]
             pred_instances = output.pred_instances
-             
+
         keep = nms(pred_instances.bboxes, pred_instances.scores, iou_threshold=param.iou_thres)
         pred_instances = pred_instances[keep]
         pred_instances = pred_instances[pred_instances.scores.float() > param.conf_thres]  
-        
+
         if len(pred_instances.scores) > param.max_dets:
             indices = pred_instances.scores.float().topk(param.max_dets)[1]
             pred_instances = pred_instances[indices]
