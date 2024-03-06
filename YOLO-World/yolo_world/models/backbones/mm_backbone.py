@@ -108,9 +108,13 @@ class HuggingCLIPLanguageBackbone(BaseModule):
         self._freeze_modules()
 
     def forward_cache(self, text: List[List[str]]) -> Tensor:
-        if not hasattr(self, "cache"):
-            self.cache = self.forward_text(text)
+        self.cache = self.forward_text(text)
         return self.cache
+    
+    # def forward_cache(self, text: List[List[str]]) -> Tensor:
+    #     if not hasattr(self, "cache"):
+    #         self.cache = self.forward_text(text)
+    #     return self.cache
 
     def forward(self, text: List[List[str]]) -> Tensor:
         if self.training:
