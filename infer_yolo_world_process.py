@@ -43,7 +43,7 @@ class InferYoloWorldParam(core.CWorkflowTaskParam):
         self.use_custom_model = utils.strtobool(params["use_custom_model"])
         self.model_weight_file = params["model_weight_file"]
         self.update = True
- 
+
     def get_values(self):
         # Send parameters values to Ikomia Studio or API
         # Create the specific dict structure (string container)
@@ -86,17 +86,6 @@ class InferYoloWorld(dataprocess.CObjectDetectionTask):
         # Function returning the number of progress steps for this algorithm
         # This is handled by the main progress bar of Ikomia Studio
         return 1
-
-    def parse_cfg_options(self, cfg_options):
-        parsed_options = {}
-        for key, value in cfg_options.items():
-            try:
-                parsed_value = eval(value)
-            except:
-                # If eval fails or is not safe, use the value directly.
-                parsed_value = value
-            parsed_options[key] = parsed_value
-        return parsed_options
 
     def run(self):
         # Main function of your algorithm
@@ -147,7 +136,6 @@ class InferYoloWorld(dataprocess.CObjectDetectionTask):
 
             param.update = False
 
-
         # Get and set classes
         texts = [[t.strip()] for t in param.prompt.split(',')] + [[' ']]
         classes = [item[0] for item in texts if item[0].strip()]
@@ -166,14 +154,13 @@ class InferYoloWorld(dataprocess.CObjectDetectionTask):
 
         keep = nms(pred_instances.bboxes, pred_instances.scores, iou_threshold=param.iou_thres)
         pred_instances = pred_instances[keep]
-        pred_instances = pred_instances[pred_instances.scores.float() > param.conf_thres]  
+        pred_instances = pred_instances[pred_instances.scores.float() > param.conf_thres]
 
         if len(pred_instances.scores) > param.max_dets:
             indices = pred_instances.scores.float().topk(param.max_dets)[1]
             pred_instances = pred_instances[indices]
 
         pred_instances = pred_instances.cpu().numpy()
-
         # Display output
         for i, (box, conf, cls) in enumerate(zip(
                                     pred_instances['bboxes'],
