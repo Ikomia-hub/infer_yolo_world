@@ -1,0 +1,15 @@
+wheel
+torch
+torchvision
+transformers
+tokenizers
+numpy
+opencv-python
+supervision==0.18.0
+openmim
+#mmcv-lite>=2.0.0rc4<2.1.0
+mmcv-lite==2.0.1
+mmdet==3.0.0
+mmengine>==0.7.1
+#mmcv ## mim install mmcv==2.0.1
+mmyolo @ git+https://github.com/onuralpszr/mmyolo.git
