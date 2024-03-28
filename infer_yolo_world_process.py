@@ -202,7 +202,7 @@ class InferYoloWorldFactory(dataprocess.CTaskFactory):
                                     "recognize and localize a wide range of objects in images."
         # relative path -> as displayed in Ikomia Studio algorithm tree
         self.info.path = "Plugins/Python/Detection"
-        self.info.version = "1.0.0"
+        self.info.version = "1.0.1"
         self.info.icon_path = "images/logo.png"
         self.info.authors = "Cheng, Tianheng and Song, Lin and Ge, Yixiao and Liu, Wenyu and Wang, Xinggang and Shan, Ying"
         self.info.article = "YOLO-World: Real-Time Open-Vocabulary Object Detection"
